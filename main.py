@@ -23,17 +23,24 @@ def read_csv():
 
 def getTeamRecords(team):
     data=read_csv()
+    length_of_usable_data = 0
     goalsFor = 0
     goalsAgainst = 0
-    print(data[0])
+    leagueGoalsFor = 0
+    leagueGoalsAgainst = 0
     for i in range(len(data)):
-        if team==data[i][1]:
-            goalsFor = goalsFor+int(data[i][2])
-            goalsAgainst = goalsAgainst+int(data[i][4])
-        elif team==data[i][3]:
-            goalsAgainst = goalsFor+int(data[i][2])
-            goalsFor= goalsAgainst+int(data[i][4])
-    print(goalsFor,goalsAgainst)
+        if data[i[2]!='']:
+            length_of_usable_data += 1
+            #unfinished code -> need to find average league goals for and against
+            #use that data to calculate offensive score and defensive score compared to rest of the league
+        if(data[i][2]!=''):
+            if team==(data[i][1]):
+                goalsFor = goalsFor+int(data[i][2])
+                goalsAgainst = goalsAgainst+int(data[i][4])
+        elif team==(data[i][3]):
+            if(data[i][2]!=''):
+                goalsAgainst = goalsAgainst+int(data[i][2])
+                goalsFor= goalsFor+int(data[i][4])
         
 getTeamRecords('Boston Bruins')
 
