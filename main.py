@@ -10,8 +10,6 @@ import colorama
 from colorama import Fore, Back, init 
 init(autoreset=True)
 
-league_gf = 3.092
-
 
 def read_csv():
     #Date,Visitor,G,Home,G,,Att.,LOG,Notes
@@ -21,7 +19,8 @@ def read_csv():
         data.remove(data[0])
     return data
 
-def getTeamRecords(data,team):
+def getTeamRecords(data):
+    global leagueGF
     teamsData={} 
     useful_data=0
     for i in range(len(data)):
@@ -39,28 +38,41 @@ def getTeamRecords(data,team):
             teamsData[data[i][3]]['Games Played']=teamsData[data[i][3]]['Games Played']+1
     
     leagueGF=0
+    leagueGA=0
     leagueGamesPlayed=0
     for i in teamsData:
         leagueGF=leagueGF+teamsData[i]['GF']
+        leagueGA=leagueGA+teamsData[i]['GA']
         leagueGamesPlayed=leagueGamesPlayed+teamsData[i]['Games Played']
-        print(i,teamsData[i])
+
     leagueGF=leagueGF/leagueGamesPlayed
-    print(leagueGF)
-        
-getTeamRecords(read_csv(),'Boston Bruins')
+    leagueGA=leagueGA/leagueGamesPlayed
 
+    for i in teamsData:
+        teamsData[i]['Attack Strength']=(teamsData[i]['GF']/teamsData[i]['Games Played'])/leagueGF
+        teamsData[i]['Defense Strength']=(teamsData[i]['GA']/teamsData[i]['Games Played'])/leagueGA
+        #print(i,teamsData[i])
+    return teamsData
+    
 
-class matchup:
-    def __init__(self,home,away) -> None: #param type: tuple (name,gf,ga,attack strength, defense strength)
+class matchup:                            #                    0    1  2    3             4
+    def __init__(self,home,away,homeName,awayName) -> None: #param type: tuple (name,gf,ga,attack strength, defense strength)
         self.home=home
         self.away=away
+        self.homeName=homeName
+        self.awayName=awayName
     def calculate_score(self):
-        return(league_gf*(self.home[3]*self.away[4]),league_gf*(self.away[3]*self.home[4])) #home, away
+        t1=leagueGF*(self.home['Attack Strength']*self.away["Defense Strength"])
+        t2=leagueGF*(self.away['Attack Strength']*self.home["Defense Strength"])
+        return(t1,t2) #home, away
     def poisson_calculator(self):
-        home_predicted,away_predicted = self.calculate_score()
+        temp=self.calculate_score()
+        home_predicted=temp[0]
+        away_predicted=temp[1]
         print(home_predicted,away_predicted)
         poisson_home=[]
         poisson_away=[]
+        all_chances=[]
         home_odds=0
         away_odds=0
         tie_odds=0
@@ -69,10 +81,13 @@ class matchup:
         outof=10
         for i in range(outof+1):
             x = poisson.pmf(k=i, mu=home_predicted)
+            
             poisson_home.append(x)
         for i in range(outof+1):
             x = poisson.pmf(k=i, mu=away_predicted)
             poisson_away.append(x)
+        
+
         for chance in poisson_home:
             for chance2 in poisson_away:
                 if row>column:
@@ -82,15 +97,39 @@ class matchup:
                 else: 
                     tie_odds=tie_odds+(chance*chance2)
 
-                print(column,row,'|',chance*chance2)
+                #print(column,row,'|',chance*chance2)
+                all_chances.append(chance*chance2)
                 row+=1
             column+=1
             row=0
-        print(Back.RED+"Real Odds")
-        print(self.home[0]+" : "+str(round(home_odds*100,3))+"%")
-        print(self.away[0]+' : '+str(round(away_odds*100,3))+'%')
-        print("Tie Odds: "+str(round(tie_odds*100,3))+'%')
-        print('-----------------------------------------------------')
-        print((1-away_odds)*100,away_odds*100)
+        home_odds=home_odds+0.5*(tie_odds)
+        away_odds=away_odds+0.5*(tie_odds)
+        print(Back.RED+"Odds")
+        print(self.homeName+" : "+str(home_odds*100)+"%"+" - "+str(home_predicted)+" Points")
+        print(self.awayName+' : '+str(away_odds*100)+'%'+" - "+str(away_predicted)+" Points")
 
-#matchup(("Calgary Flames",3.4,2.29,1.100,0.798),("Edmonton Oilers",3.3,3.06,1.067,1.067)).poisson_calculator()
+        for i in range(len(poisson_home)):
+            plt.plot(i, poisson_home[i]*100,'xb-')
+        plt.xlabel(f'Goals Scored ({self.homeName})')
+        plt.ylabel('% Chance')
+        plt.savefig(self.homeName+'vs'+self.awayName+f'({self.homeName[0:5]})')
+        plt.clf()
+
+
+        for i in range(len(poisson_away)):
+            plt.plot(i, poisson_away[i]*100,'xb-')
+        plt.xlabel(f'Goals Scored ({self.awayName})')
+        plt.ylabel('% Chance')
+        plt.savefig(self.homeName+'vs'+self.awayName+f'({self.awayName[0:5]})')
+
+all=getTeamRecords(read_csv())
+homeTeamName=input("Home Team : ")
+awayTeamName=input("Away Team : ")
+for i in all.keys():
+    if i.lower().find(homeTeamName.lower())!=-1:
+        homeTeamName=i
+    if i.lower().find(awayTeamName.lower())!=-1:
+        awayTeamName=i
+homeTeam=all[homeTeamName]
+awayTeam=all[awayTeamName]
+matchup(homeTeam,awayTeam,homeTeamName,awayTeamName).poisson_calculator()
