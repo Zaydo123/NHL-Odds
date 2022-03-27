@@ -21,28 +21,33 @@ def read_csv():
         data.remove(data[0])
     return data
 
-def getTeamRecords(team):
-    data=read_csv()
-    length_of_usable_data = 0
-    goalsFor = 0
-    goalsAgainst = 0
-    leagueGoalsFor = 0
-    leagueGoalsAgainst = 0
+def getTeamRecords(data,team):
+    teamsData={} 
+    useful_data=0
     for i in range(len(data)):
-        if data[i[2]!='']:
-            length_of_usable_data += 1
-            #unfinished code -> need to find average league goals for and against
-            #use that data to calculate offensive score and defensive score compared to rest of the league
-        if(data[i][2]!=''):
-            if team==(data[i][1]):
-                goalsFor = goalsFor+int(data[i][2])
-                goalsAgainst = goalsAgainst+int(data[i][4])
-        elif team==(data[i][3]):
-            if(data[i][2]!=''):
-                goalsAgainst = goalsAgainst+int(data[i][2])
-                goalsFor= goalsFor+int(data[i][4])
+        if data[i][2]!='':
+            useful_data+=1
+            if data[i][1] not in teamsData.keys():
+                    teamsData[data[i][1]]={'GF':0,'GA':0,"Attack Strength":0,"Defense Strength":0,"Games Played":0}
+            if data[i][3] not in teamsData.keys():
+                teamsData[data[i][3]]={'GF':0,'GA':0,"Attack Strength":0,"Defense Strength":0,"Games Played":0}
+            teamsData[data[i][1]]['GF']=teamsData[data[i][1]]['GF']+int(data[i][2])
+            teamsData[data[i][1]]['GA']=teamsData[data[i][1]]['GA']+int(data[i][4])
+            teamsData[data[i][1]]['Games Played']=teamsData[data[i][1]]['Games Played']+1
+            teamsData[data[i][3]]['GF']=teamsData[data[i][3]]['GF']+int(data[i][4])
+            teamsData[data[i][3]]['GA']=teamsData[data[i][3]]['GA']+int(data[i][2])
+            teamsData[data[i][3]]['Games Played']=teamsData[data[i][3]]['Games Played']+1
+    
+    leagueGF=0
+    leagueGamesPlayed=0
+    for i in teamsData:
+        leagueGF=leagueGF+teamsData[i]['GF']
+        leagueGamesPlayed=leagueGamesPlayed+teamsData[i]['Games Played']
+        print(i,teamsData[i])
+    leagueGF=leagueGF/leagueGamesPlayed
+    print(leagueGF)
         
-getTeamRecords('Boston Bruins')
+getTeamRecords(read_csv(),'Boston Bruins')
 
 
 class matchup:
@@ -88,4 +93,4 @@ class matchup:
         print('-----------------------------------------------------')
         print((1-away_odds)*100,away_odds*100)
 
-matchup(("Calgary Flames",3.4,2.29,1.100,0.798),("Edmonton Oilers",3.3,3.06,1.067,1.067)).poisson_calculator()
+#matchup(("Calgary Flames",3.4,2.29,1.100,0.798),("Edmonton Oilers",3.3,3.06,1.067,1.067)).poisson_calculator()
