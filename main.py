@@ -6,6 +6,8 @@ from mpl_toolkits import mplot3d
 import numpy as np
 import time
 import csv
+from teams import teams
+import random
 import colorama
 from colorama import Fore, Back, init 
 init(autoreset=True)
@@ -18,6 +20,9 @@ def read_csv():
         data = list(reader)
         data.remove(data[0])
     return data
+
+data_list=read_csv()
+
 
 def getTeamRecords(data):
     global leagueGF
@@ -69,7 +74,6 @@ class matchup:                            #                    0    1  2    3   
         temp=self.calculate_score()
         home_predicted=temp[0]
         away_predicted=temp[1]
-        print(home_predicted,away_predicted)
         poisson_home=[]
         poisson_away=[]
         all_chances=[]
@@ -107,12 +111,12 @@ class matchup:                            #                    0    1  2    3   
         print(Back.RED+"Odds")
         print(self.homeName+" : "+str(home_odds*100)+"%"+" - "+str(home_predicted)+" Points")
         print(self.awayName+' : '+str(away_odds*100)+'%'+" - "+str(away_predicted)+" Points")
-
+        
         for i in range(len(poisson_home)):
             plt.plot(i, poisson_home[i]*100,'xb-')
         plt.xlabel(f'Goals Scored ({self.homeName})')
         plt.ylabel('% Chance')
-        plt.savefig(self.homeName+'vs'+self.awayName+f'({self.homeName[0:5]})')
+        plt.savefig('plots/'+self.homeName+' vs '+self.awayName+f'({self.homeName[0:5]}).png')
         plt.clf()
 
 
@@ -120,9 +124,15 @@ class matchup:                            #                    0    1  2    3   
             plt.plot(i, poisson_away[i]*100,'xb-')
         plt.xlabel(f'Goals Scored ({self.awayName})')
         plt.ylabel('% Chance')
-        plt.savefig(self.homeName+'vs'+self.awayName+f'({self.awayName[0:5]})')
+        plt.savefig('plots/'+self.homeName+' vs '+self.awayName+f'({self.awayName[0:5]}).png')
+        plt.clf()
+        return(home_odds,away_odds)
 
-all=getTeamRecords(read_csv())
+    def ridge_regression():
+        pass
+
+
+all=getTeamRecords(data_list)
 homeTeamName=input("Home Team : ")
 awayTeamName=input("Away Team : ")
 for i in all.keys():
@@ -130,6 +140,20 @@ for i in all.keys():
         homeTeamName=i
     if i.lower().find(awayTeamName.lower())!=-1:
         awayTeamName=i
+
+
 homeTeam=all[homeTeamName]
 awayTeam=all[awayTeamName]
+
 matchup(homeTeam,awayTeam,homeTeamName,awayTeamName).poisson_calculator()
+
+with open('predictions.txt','w+') as f:
+    for i in range(len(all.keys())):
+        try:
+            t1Name=random.choice(list(all.keys()))
+            t2Name=random.choice(list(all.keys()))
+            result=matchup(all[t1Name],all[t2Name],t1Name,t2Name).poisson_calculator()
+            f.write(t1Name+' '+str(result[0])+'  ||||   '+t2Name+' '+str(result[1])+'\n')
+        except KeyError:
+            print(teams[i])
+
