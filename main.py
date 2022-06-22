@@ -146,7 +146,7 @@ homeTeam=all[homeTeamName]
 awayTeam=all[awayTeamName]
 
 matchup(homeTeam,awayTeam,homeTeamName,awayTeamName).poisson_calculator()
-
+'''
 with open('predictions.txt','w+') as f:
     for i in range(len(all.keys())):
         try:
@@ -157,3 +157,4 @@ with open('predictions.txt','w+') as f:
         except KeyError:
             print(teams[i])
 
+'''
