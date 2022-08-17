@@ -14,7 +14,7 @@ In an attempt to make quick money against friends, we created this computer prog
 
 ## Poisson Distribution and Win Percentage Calculation
 
-We created a poisson distribution in the python code using [SciPy](https://scipy.org/)
+We created a [Poisson Distribution](https://en.wikipedia.org/wiki/Poisson_distribution) in the python code using [SciPy](https://scipy.org/)
 
 Heatmapping the values from each poisson calculation would give us a graph similar to this:
   <img width="962" alt="Screen Shot 2022-08-17 at 1 29 25 AM" src="https://user-images.githubusercontent.com/26662362/185050262-642381b6-fa95-4bb2-9276-e8a573fd27d2.png">
@@ -51,4 +51,3 @@ $$ Attack Strength = {Average Goals Count\over League Average GF}$$
 
 $$ Defensive Strength = {Average Goals Against Count\over League Average GA} $$
 
-[Poisson Distribution](https://en.wikipedia.org/wiki/Poisson_distribution)
