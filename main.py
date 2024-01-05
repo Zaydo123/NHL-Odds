@@ -1,4 +1,3 @@
-from turtle import home
 from numpy import append
 from scipy.stats import poisson
 import matplotlib.pyplot as plt
