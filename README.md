@@ -1,7 +1,23 @@
 # NHL-Odds Calculator
 In an attempt to make quick money against friends, we created this computer program that analyzes current season trends and uses math/statistics to predict scores and win percentages. 
 
-## Authors: [Zayd Alzein](https://github.com/Zaydo123) and [Andrew Isenhart](https://github.com/aisenhart) 
+#### Authors: [Zayd Alzein](https://github.com/Zaydo123) and [Andrew Isenhart](https://github.com/aisenhart) 
+
+## Quick Start
+
+
+### Install Dependencies
+
+```
+pip install -r requirements.txt
+```
+
+### Run the program
+
+```
+python main.py
+```
+
 
 ## Poisson Distribution and Win Percentage Calculation
 
