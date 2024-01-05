@@ -1,11 +1,7 @@
-from numpy import append
 from scipy.stats import poisson
 import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
-import numpy as np
 import time
 import csv
-from teams import teams
 import random
 import colorama
 from colorama import Fore, Back, init 
