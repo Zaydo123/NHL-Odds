@@ -1,16 +1,7 @@
 # NHL-Odds Calculator
 In an attempt to make quick money against friends, we created this computer program that analyzes current season trends and uses math/statistics to predict scores and win percentages. 
 
-**Collaborative effort by [Zayd Alzein](https://github.com/Zaydo123) and [Andrew Isenhart](https://github.com/aisenhart)**
-
-<p float='center'>
- <a href='https://github.com/Zaydo123'><img src="https://user-images.githubusercontent.com/26662362/185042773-b46e7806-015e-4a0b-9158-552f39f62d79.png" alt="Zayd Alzein" width=200px></a>
- &nbsp; &nbsp; &nbsp; &nbsp;
- <a href='https://github.com/aisenhart'> <img src="https://user-images.githubusercontent.com/26662362/185042974-871833db-8a14-4450-befe-d0ffb1e48467.png" alt="Andrew Isenhart" width=200px></a>
-</p>
-
-***
-
+## Authors: [Zayd Alzein](https://github.com/Zaydo123) and [Andrew Isenhart](https://github.com/aisenhart) 
 
 ## Poisson Distribution and Win Percentage Calculation
 
